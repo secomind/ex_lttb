@@ -37,6 +37,33 @@ defmodule ExLTTB do
     %Point{x: x_sum / len, y: y_sum / len}
   end
 
+  def select_samples([[first_sample] | tail] = _buckets) do
+    do_select_samples(tail, [first_sample])
+  end
+
+  defp do_select_samples([[last_sample] | []], acc) do
+    Enum.reverse([last_sample | acc])
+  end
+
+  defp do_select_samples([candidates, next_bucket | tail], [prev_point | _acc_tail] = acc) do
+    next_point = average_point(next_bucket)
+
+    [initial_candidate | _tail] = candidates
+    initial_area = triangle_area(prev_point, initial_candidate, next_point)
+
+    {selected_point, _area} =
+      Enum.reduce(candidates, {initial_candidate, initial_area}, fn candidate_point, {best_point, best_area} ->
+        candidate_area = triangle_area(prev_point, candidate_point, next_point)
+        if candidate_area > best_area do
+          {candidate_point, candidate_area}
+        else
+          {best_point, best_area}
+        end
+      end)
+
+    do_select_samples([next_bucket | tail], [selected_point | acc])
+  end
+
   defp triangle_area(%Point{x: x1, y: y1}, %Point{x: x2, y: y2}, %Point{x: x3, y: y3}) do
     abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) / 2
   end
