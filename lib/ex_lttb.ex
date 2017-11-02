@@ -9,6 +9,10 @@ defmodule ExLTTB do
     {:error, :invalid_threshold}
   end
 
+  def lttb([first_sample | _tail] = sample_list, threshold) when threshold == 2 and length(sample_list) >= 2 do
+    {:ok, [first_sample, List.last(sample_list)]}
+  end
+
   def lttb(sample_list, threshold) when threshold > length(sample_list) do
     {:ok, sample_list}
   end
