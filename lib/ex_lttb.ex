@@ -37,6 +37,10 @@ defmodule ExLTTB do
     %Point{x: x_sum / len, y: y_sum / len}
   end
 
+  defp triangle_area(%Point{x: x1, y: y1}, %Point{x: x2, y: y2}, %Point{x: x3, y: y3}) do
+    abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) / 2
+  end
+
   defp do_make_buckets([head | []], _current_index, _avg, _avg_acc, buckets_acc) do
     Enum.reverse([[head] | buckets_acc])
   end
