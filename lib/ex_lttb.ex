@@ -3,6 +3,8 @@ defmodule ExLTTB do
   Documentation for ExLTTB.
   """
 
+  alias ExLTTB.Point
+
   def lttb(_sample_list, threshold) when threshold < 2 do
     {:error, :invalid_threshold}
   end
@@ -21,6 +23,13 @@ defmodule ExLTTB do
     avg = (length(sample_list) - 2) / (buckets_number -  2)
 
     do_make_buckets(tail, 1, avg, avg, [[head]])
+  end
+
+  def average_point(points) do
+    {x_sum, y_sum} = Enum.reduce(points, {0, 0}, fn %Point{x: x, y: y}, {x_sum, y_sum} -> {x_sum + x, y_sum + y} end)
+    len = length(points)
+
+    %Point{x: x_sum / len, y: y_sum / len}
   end
 
   defp do_make_buckets([head | []], _current_index, _avg, _avg_acc, buckets_acc) do
