@@ -17,6 +17,14 @@ defmodule ExLTTB do
     {:ok, sample_list}
   end
 
+  def lttb(sample_list, threshold) do
+    samples =
+      make_buckets(sample_list, threshold)
+      |> select_samples()
+
+    {:ok, samples}
+  end
+
   def make_buckets(sample_list, buckets_number) when buckets_number > length(sample_list) do
     Enum.map(sample_list, fn el -> [el] end)
   end
