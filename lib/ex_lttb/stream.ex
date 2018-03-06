@@ -5,6 +5,33 @@ defmodule ExLTTB.Stream do
 
   alias ExLTTB.SampleUtils
 
+  @doc """
+  Downsamples a samples stream using [LTTB](https://skemman.is/bitstream/1946/15343/3/SS_MSthesis.pdf).
+
+  ## Arguments
+  * `samples_stream`: a `Stream` of samples. These can have any representation provided that access functions are provided (see Options)
+  * `avg_bucket_size`: the average size of a single bucket. The first (and if the Stream is not infinite, also the last) bucket has only one sample like in the original algorithm
+  * `opts`: a keyword list of options.
+
+  ## Options
+  * `sample_to_x_fun`: a function that takes as argument a sample and returns its x coordinate. Defaults to `sample[:x]`
+  * `sample_to_y_fun`: a function that takes as argument a sample and returns its y coordinate. Defaults to `sample[:y]`
+  * `xy_to_sample_fun`: a function that takes as argument `x` and `y` and returns a sample with these coordinates. Defaults to `%{x: x, y: y}`
+
+  ## Return
+  A downsampled `Stream`. If the starting `samples_stream` has a limited length L, than the length of the returned stream is 2 + ceil(L / avg_bucket_size).
+  """
+  def lttb(samples_stream, avg_bucket_size, opts \\ [])
+
+  def lttb(samples_stream, avg_bucket_size, _opts) when avg_bucket_size == 1.0 do
+    samples_stream
+  end
+
+  def lttb(samples_stream, avg_bucket_size, opts) when avg_bucket_size > 1 do
+    make_buckets(samples_stream, avg_bucket_size, opts)
+    |> select_samples(opts)
+  end
+
   defp make_buckets(samples_stream, avg_bucket_size, opts) when is_integer(avg_bucket_size) do
     make_buckets(samples_stream, avg_bucket_size / 1, opts)
   end
