@@ -5,6 +5,22 @@ defmodule ExLTTB do
 
   alias ExLTTB.SampleUtils
 
+  @doc """
+  Downsamples a sample list using [LTTB](https://skemman.is/bitstream/1946/15343/3/SS_MSthesis.pdf).
+
+  ## Arguments
+  * `sample_list`: a `List` of samples. These can have any representation provided that access functions are provided (see Options)
+  * `threshold`: the number of required output samples
+  * `opts`: a keyword list of options.
+
+  ## Options
+  * `sample_to_x_fun`: a function that takes as argument a sample and returns its x coordinate. Defaults to `sample[:x]`
+  * `sample_to_y_fun`: a function that takes as argument a sample and returns its y coordinate. Defaults to `sample[:y]`
+  * `xy_to_sample_fun`: a function that takes as argument `x` and `y` and returns a sample with these coordinates. Defaults to `%{x: x, y: y}`
+
+  ## Return
+  A downsampled list of samples.
+  """
   def lttb(sample_list, threshold, opts \\ [])
 
   def lttb(_sample_list, threshold, _opts) when threshold < 2 do
