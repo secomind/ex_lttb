@@ -3,7 +3,7 @@ defmodule ExLTTB do
   Documentation for ExLTTB.
   """
 
-  alias ExLTTB.PointUtils
+  alias ExLTTB.SampleUtils
 
   def lttb(sample_list, threshold, opts \\ [])
 
@@ -61,22 +61,22 @@ defmodule ExLTTB do
     Enum.reverse([last_sample | acc])
   end
 
-  defp do_select_samples([candidates, next_bucket | tail], [prev_point | _acc_tail] = acc, opts) do
-    next_point = PointUtils.average_point(next_bucket, opts)
+  defp do_select_samples([candidates, next_bucket | tail], [prev_sample | _acc_tail] = acc, opts) do
+    next_sample = SampleUtils.average_sample(next_bucket, opts)
 
     [initial_candidate | _tail] = candidates
-    initial_area = PointUtils.triangle_area(prev_point, initial_candidate, next_point, opts)
+    initial_area = SampleUtils.triangle_area(prev_sample, initial_candidate, next_sample, opts)
 
-    {selected_point, _area} =
-      Enum.reduce(candidates, {initial_candidate, initial_area}, fn candidate_point, {best_point, best_area} ->
-        candidate_area = PointUtils.triangle_area(prev_point, candidate_point, next_point, opts)
+    {selected_sample, _area} =
+      Enum.reduce(candidates, {initial_candidate, initial_area}, fn candidate_sample, {best_sample, best_area} ->
+        candidate_area = SampleUtils.triangle_area(prev_sample, candidate_sample, next_sample, opts)
         if candidate_area > best_area do
-          {candidate_point, candidate_area}
+          {candidate_sample, candidate_area}
         else
-          {best_point, best_area}
+          {best_sample, best_area}
         end
       end)
 
-    do_select_samples([next_bucket | tail], [selected_point | acc], opts)
+    do_select_samples([next_bucket | tail], [selected_sample | acc], opts)
   end
 end
