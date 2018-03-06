@@ -6,7 +6,9 @@ defmodule ExLTTB.Stream do
   alias ExLTTB.SampleUtils
 
   @doc """
-  Downsamples a samples stream using [LTTB](https://skemman.is/bitstream/1946/15343/3/SS_MSthesis.pdf).
+  Downsamples a samples stream using a modified version of [LTTB](https://skemman.is/bitstream/1946/15343/3/SS_MSthesis.pdf).
+  The difference with the original algorithm is that since a Stream could be infinite, it doesn't make sense to define the number of output buckets (threshold).
+  Instead, the parameter here is the average bucket size (≈ downsample rate, see Return).
 
   ## Arguments
   * `samples_stream`: a `Stream` of samples. These can have any representation provided that access functions are provided (see Options)
