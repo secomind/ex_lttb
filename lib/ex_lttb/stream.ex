@@ -47,4 +47,29 @@ defmodule ExLTTB.Stream do
     Stream.chunk_while(samples_stream, {0, 0, [], []}, chunk_fun, after_fun)
     |> Stream.flat_map(fn x -> x end)
   end
+
+  defp select_samples(samples_stream, opts) do
+    Stream.transform(samples_stream, nil, fn
+      {[first_sample | []], _next_samples_avg_point}, nil ->
+        {[first_sample], first_sample}
+
+      {[last_sample | []], nil}, _prev_sample ->
+        {[last_sample], last_sample}
+
+      {[initial_candidate | candidates_tail], next_samples_avg}, prev_sample ->
+        initial_area = PointUtils.triangle_area(prev_sample, initial_candidate, next_samples_avg, opts)
+
+        {selected_point, _selected_area} =
+          Enum.reduce(candidates_tail, {initial_candidate, initial_area}, fn candidate_point, {best_point, best_area} ->
+            candidate_area = PointUtils.triangle_area(prev_sample, candidate_point, next_samples_avg, opts)
+            if candidate_area > best_area do
+              {candidate_point, candidate_area}
+            else
+              {best_point, best_area}
+            end
+          end)
+
+        {[selected_point], selected_point}
+    end)
+  end
 end
