@@ -62,10 +62,10 @@ defmodule ExLTTB do
 
   defp do_make_buckets([head | tail], current_index, avg, avg_acc, [bucket_head | bucket_tail] = buckets_acc) do
     next_index =  current_index + 1
-    if Float.floor(avg_acc) > current_index do
-      do_make_buckets(tail, next_index, avg, avg_acc, [[head | bucket_head] | bucket_tail])
-    else
+    if current_index > avg_acc do
       do_make_buckets(tail, next_index, avg,  avg_acc + avg, [[head] | buckets_acc])
+    else
+      do_make_buckets(tail, next_index, avg, avg_acc, [[head | bucket_head] | bucket_tail])
     end
   end
 
