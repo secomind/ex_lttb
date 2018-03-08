@@ -21,7 +21,7 @@ defmodule ExLTTB.Stream do
   * `xy_to_sample_fun`: a function that takes as argument `x` and `y` and returns a sample with these coordinates. Defaults to `%{x: x, y: y}`
 
   ## Return
-  A downsampled `Stream`. If the starting `samples_stream` has a limited length L, than the length of the returned stream is 2 + ceil(L / avg_bucket_size).
+  A downsampled `Stream`. If the starting `samples_stream` has a limited length L, than the length of the returned stream length is <= 2 + ceil(L / avg_bucket_size).
   """
   def lttb(samples_stream, avg_bucket_size, opts \\ [])
 
