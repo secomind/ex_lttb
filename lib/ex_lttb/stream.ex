@@ -62,10 +62,10 @@ defmodule ExLTTB.Stream do
 
     after_fun = fn
       {_current_index, _avg_acc, [], [last_sample | ready_bucket_tail]} ->
-        {:cont, [{ready_bucket_tail, last_sample}, {last_sample, nil}], []}
+        {:cont, [{ready_bucket_tail, last_sample}, {[last_sample], nil}], []}
 
       {_current_index, _avg_acc, [last_sample | []], ready_bucket} ->
-        {:cont, [{ready_bucket, last_sample}, {last_sample, nil}], []}
+        {:cont, [{ready_bucket, last_sample}, {[last_sample], nil}], []}
 
       {_current_index, _avg_acc, [last_sample | bucket_acc_tail], ready_bucket} ->
         last_bucket = Enum.reverse(bucket_acc_tail)
