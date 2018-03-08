@@ -61,6 +61,9 @@ defmodule ExLTTB.Stream do
     end
 
     after_fun = fn
+      {_current_index, _avg_acc, [], [last_sample | []]} ->
+        {:cont, [{[last_sample], nil}], []}
+
       {_current_index, _avg_acc, [], [last_sample | ready_bucket_tail]} ->
         {:cont, [{ready_bucket_tail, last_sample}, {[last_sample], nil}], []}
 
