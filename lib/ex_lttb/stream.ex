@@ -52,7 +52,7 @@ defmodule ExLTTB.Stream do
       sample, {current_index, avg_acc, bucket_acc, ready_bucket} ->
         next_index = current_index + 1
         if current_index > avg_acc do
-          new_ready_bucket = Enum.reverse([sample | bucket_acc])
+          new_ready_bucket = [sample | bucket_acc]
           new_ready_bucket_avg_sample = SampleUtils.average_sample(new_ready_bucket, opts)
           {:cont, [{ready_bucket, new_ready_bucket_avg_sample}], {next_index, avg_acc + avg_bucket_size, [], new_ready_bucket}}
         else
@@ -70,9 +70,8 @@ defmodule ExLTTB.Stream do
       {_current_index, _avg_acc, [last_sample | []], ready_bucket} ->
         {:cont, [{ready_bucket, last_sample}, {[last_sample], nil}], []}
 
-      {_current_index, _avg_acc, [last_sample | bucket_acc_tail], ready_bucket} ->
-        last_bucket = Enum.reverse(bucket_acc_tail)
-        last_bucket_avg_sample = SampleUtils.average_sample(bucket_acc_tail, opts)
+      {_current_index, _avg_acc, [last_sample | last_bucket], ready_bucket} ->
+        last_bucket_avg_sample = SampleUtils.average_sample(last_bucket, opts)
         {:cont, [{ready_bucket, last_bucket_avg_sample}, {last_bucket, last_sample}, {[last_sample], nil}], []}
     end
 
