@@ -23,6 +23,7 @@ defmodule ExLTTB.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:excoveralls, "~> 0.8", only: :test},
       {:stream_data, "~> 0.1", only: :test}
     ]
