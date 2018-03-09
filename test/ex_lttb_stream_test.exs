@@ -49,6 +49,35 @@ defmodule ExLTTB.StreamTest do
     end
   end
 
+  property "returns the same stream if avg_bucket_size == 1" do
+    ordered_sample_list_gen =
+      gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), min_length: 2) do
+        Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
+      end
+
+    check all sample_list <- ordered_sample_list_gen do
+      avg_bucket_size = 1
+      result = ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
+      assert result == sample_list
+    end
+  end
+
+  property "integer avg_bucket_size is correctly converted" do
+    greater_than_one_gen = gen all int <- positive_integer(), do: int + 1
+    ordered_sample_list_gen =
+      gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), min_length: 2) do
+        Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
+      end
+
+    check all sample_list <- ordered_sample_list_gen,
+              avg_bucket_size <- greater_than_one_gen do
+      result =
+        ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
+        |> Enum.to_list()
+      assert length(result) <= min(length(sample_list), 2 + Float.ceil(length(sample_list) / avg_bucket_size))
+    end
+  end
+
   property "all properties hold also with data in a different shape with access functions" do
     ordered_sample_list_gen =
       gen all sample_list <- list_of(fixed_list([{:timestamp, float()}, {:data, float()}]), min_length: 2) do
