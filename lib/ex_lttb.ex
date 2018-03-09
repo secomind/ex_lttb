@@ -42,7 +42,8 @@ defmodule ExLTTB do
     {:error, :invalid_threshold}
   end
 
-  def lttb([first_sample | _tail] = sample_list, threshold, _opts) when threshold == 2 and length(sample_list) >= 2 do
+  def lttb([first_sample | _tail] = sample_list, threshold, _opts)
+      when threshold == 2 and length(sample_list) >= 2 do
     {:ok, [first_sample, List.last(sample_list)]}
   end
 
@@ -65,7 +66,7 @@ defmodule ExLTTB do
   defp make_buckets([first_sample, second_sample | tail] = sample_list, buckets_number) do
     # We subtract 2 since the first and last buckets are fixed,
     # containing the first and last sample
-    avg = (length(sample_list) - 2) / (buckets_number -  2)
+    avg = (length(sample_list) - 2) / (buckets_number - 2)
 
     # The acc is populated from right to left and reversed at the end
     do_make_buckets(tail, 1, avg, avg, [[second_sample], [first_sample]])
@@ -75,10 +76,17 @@ defmodule ExLTTB do
     Enum.reverse([[head] | buckets_acc])
   end
 
-  defp do_make_buckets([head | tail], current_index, avg, avg_acc, [bucket_head | bucket_tail] = buckets_acc) do
-    next_index =  current_index + 1
+  defp do_make_buckets(
+         [head | tail],
+         current_index,
+         avg,
+         avg_acc,
+         [bucket_head | bucket_tail] = buckets_acc
+       ) do
+    next_index = current_index + 1
+
     if current_index > avg_acc do
-      do_make_buckets(tail, next_index, avg,  avg_acc + avg, [[head] | buckets_acc])
+      do_make_buckets(tail, next_index, avg, avg_acc + avg, [[head] | buckets_acc])
     else
       do_make_buckets(tail, next_index, avg, avg_acc, [[head | bucket_head] | bucket_tail])
     end
@@ -99,8 +107,11 @@ defmodule ExLTTB do
     initial_area = SampleUtils.triangle_area(prev_sample, initial_candidate, next_sample, opts)
 
     {selected_sample, _area} =
-      Enum.reduce(candidates, {initial_candidate, initial_area}, fn candidate_sample, {best_sample, best_area} ->
-        candidate_area = SampleUtils.triangle_area(prev_sample, candidate_sample, next_sample, opts)
+      Enum.reduce(candidates, {initial_candidate, initial_area}, fn candidate_sample,
+                                                                    {best_sample, best_area} ->
+        candidate_area =
+          SampleUtils.triangle_area(prev_sample, candidate_sample, next_sample, opts)
+
         if candidate_area > best_area do
           {candidate_sample, candidate_area}
         else

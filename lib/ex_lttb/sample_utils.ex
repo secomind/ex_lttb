@@ -30,9 +30,10 @@ defmodule ExLTTB.SampleUtils do
   * `xy_to_sample_fun`: a function that takes as argument `x` and `y` and returns a sample with these coordinates. Defaults to `%{x: x, y: y}`
   """
   def average_sample(samples, opts \\ []) when is_list(samples) do
-    {x_sum, y_sum} = Enum.reduce(samples, {0, 0}, fn sample, {x_sum, y_sum} ->
-      {x_sum + get_x(sample, opts), y_sum + get_y(sample, opts)}
-    end)
+    {x_sum, y_sum} =
+      Enum.reduce(samples, {0, 0}, fn sample, {x_sum, y_sum} ->
+        {x_sum + get_x(sample, opts), y_sum + get_y(sample, opts)}
+      end)
 
     len = length(samples) / 1.0
 

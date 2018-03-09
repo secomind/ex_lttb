@@ -14,7 +14,9 @@ defmodule ExLTTB.StreamTest do
       result =
         ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
         |> Enum.to_list()
-      assert length(result) <= min(length(sample_list), 2 + Float.ceil(length(sample_list) / avg_bucket_size))
+
+      assert length(result) <=
+               min(length(sample_list), 2 + Float.ceil(length(sample_list) / avg_bucket_size))
     end
   end
 
@@ -29,6 +31,7 @@ defmodule ExLTTB.StreamTest do
       result =
         ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
         |> Enum.to_list()
+
       assert Enum.all?(result, fn el -> Enum.member?(sample_list, el) end)
     end
   end
@@ -44,6 +47,7 @@ defmodule ExLTTB.StreamTest do
       result =
         ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
         |> Enum.to_list()
+
       assert List.first(result) == List.first(sample_list)
       assert List.last(result) == List.last(sample_list)
     end
@@ -74,13 +78,16 @@ defmodule ExLTTB.StreamTest do
       result =
         ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
         |> Enum.to_list()
-      assert length(result) <= min(length(sample_list), 2 + Float.ceil(length(sample_list) / avg_bucket_size))
+
+      assert length(result) <=
+               min(length(sample_list), 2 + Float.ceil(length(sample_list) / avg_bucket_size))
     end
   end
 
   property "all properties hold also with data in a different shape with access functions" do
     ordered_sample_list_gen =
-      gen all sample_list <- list_of(fixed_list([{:timestamp, float()}, {:data, float()}]), min_length: 2) do
+      gen all sample_list <-
+                list_of(fixed_list([{:timestamp, float()}, {:data, float()}]), min_length: 2) do
         Enum.sort(sample_list, fn a, b ->
           xa = Keyword.fetch(a, :timestamp)
           xb = Keyword.fetch(b, :timestamp)
@@ -103,7 +110,10 @@ defmodule ExLTTB.StreamTest do
           xy_to_sample_fun: xy_to_sample_fun
         )
         |> Enum.to_list()
-      assert length(result) <= min(length(sample_list), 2 + Float.ceil(length(sample_list) / avg_bucket_size))
+
+      assert length(result) <=
+               min(length(sample_list), 2 + Float.ceil(length(sample_list) / avg_bucket_size))
+
       assert Enum.all?(result, fn el -> Enum.member?(sample_list, el) end)
       assert List.first(result) == List.first(sample_list)
       assert List.last(result) == List.last(sample_list)

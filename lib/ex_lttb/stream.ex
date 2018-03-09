@@ -65,10 +65,13 @@ defmodule ExLTTB.Stream do
 
       sample, {current_index, avg_acc, bucket_acc, ready_bucket} ->
         next_index = current_index + 1
+
         if current_index > avg_acc do
           new_ready_bucket = [sample | bucket_acc]
           new_ready_bucket_avg_sample = SampleUtils.average_sample(new_ready_bucket, opts)
-          {:cont, [{ready_bucket, new_ready_bucket_avg_sample}], {next_index, avg_acc + avg_bucket_size, [], new_ready_bucket}}
+
+          {:cont, [{ready_bucket, new_ready_bucket_avg_sample}],
+           {next_index, avg_acc + avg_bucket_size, [], new_ready_bucket}}
         else
           {:cont, {next_index, avg_acc, [sample | bucket_acc], ready_bucket}}
         end
@@ -86,7 +89,13 @@ defmodule ExLTTB.Stream do
 
       {_current_index, _avg_acc, [last_sample | last_bucket], ready_bucket} ->
         last_bucket_avg_sample = SampleUtils.average_sample(last_bucket, opts)
-        {:cont, [{ready_bucket, last_bucket_avg_sample}, {last_bucket, last_sample}, {[last_sample], nil}], []}
+
+        {:cont,
+         [
+           {ready_bucket, last_bucket_avg_sample},
+           {last_bucket, last_sample},
+           {[last_sample], nil}
+         ], []}
     end
 
     Stream.chunk_while(samples_stream, {0, 0, [], []}, chunk_fun, after_fun)
@@ -102,11 +111,16 @@ defmodule ExLTTB.Stream do
         {[last_sample], last_sample}
 
       {[initial_candidate | candidates_tail], next_samples_avg}, prev_sample ->
-        initial_area = SampleUtils.triangle_area(prev_sample, initial_candidate, next_samples_avg, opts)
+        initial_area =
+          SampleUtils.triangle_area(prev_sample, initial_candidate, next_samples_avg, opts)
 
         {selected_sample, _selected_area} =
-          Enum.reduce(candidates_tail, {initial_candidate, initial_area}, fn candidate_sample, {best_sample, best_area} ->
-            candidate_area = SampleUtils.triangle_area(prev_sample, candidate_sample, next_samples_avg, opts)
+          Enum.reduce(candidates_tail, {initial_candidate, initial_area}, fn candidate_sample,
+                                                                             {best_sample,
+                                                                              best_area} ->
+            candidate_area =
+              SampleUtils.triangle_area(prev_sample, candidate_sample, next_samples_avg, opts)
+
             if candidate_area > best_area do
               {candidate_sample, candidate_area}
             else
