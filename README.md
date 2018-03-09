@@ -1,4 +1,4 @@
-# ExLTTB
+# ExLTTB [![hex.pm version](https://img.shields.io/hexpm/v/ex_lttb.svg)](https://hex.pm/packages/ex_lttb) [![Build Status](https://travis-ci.org/ispirata/ex_lttb.svg?branch=master)](https://travis-ci.org/ispirata/ex_lttb) [![Coverage Status](https://coveralls.io/repos/github/ispirata/ex_lttb/badge.svg)](https://coveralls.io/github/ispirata/ex_lttb)
 
 An Elixir downsampling library that retains the visual characteristics of your data.
 
