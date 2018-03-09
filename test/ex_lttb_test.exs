@@ -4,42 +4,42 @@ defmodule ExLTTBTest do
   doctest ExLTTB
 
   property "resulting list has always length <= threshold" do
-    greater_than_two_gen = gen all int <- positive_integer(), do: int + 2
+    greater_than_one_gen = gen all int <- positive_integer(), do: int + 1
     ordered_sample_list_gen =
       gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), min_length: 2) do
         Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
       end
 
     check all sample_list <- ordered_sample_list_gen,
-              threshold <- greater_than_two_gen do
+              threshold <- greater_than_one_gen do
       {:ok, result} = ExLTTB.lttb(sample_list, threshold)
       assert length(result) == threshold || length(sample_list) <= threshold
     end
   end
 
   property "the samples in the result are contained in the original list (including additional fields)" do
-    greater_than_two_gen = gen all int <- positive_integer(), do: int + 2
+    greater_than_one_gen = gen all int <- positive_integer(), do: int + 1
     ordered_sample_list_gen =
       gen all sample_list <- list_of(fixed_map(%{x: float(), y: float(), other: float()}), min_length: 2) do
         Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
       end
 
     check all sample_list <- ordered_sample_list_gen,
-              threshold <- greater_than_two_gen do
+              threshold <- greater_than_one_gen do
       {:ok, result} = ExLTTB.lttb(sample_list, threshold)
       assert Enum.all?(result, fn el -> Enum.member?(sample_list, el) end)
     end
   end
 
   property "the first and last sample are the same of the original list" do
-    greater_than_two_gen = gen all int <- positive_integer(), do: int + 2
+    greater_than_one_gen = gen all int <- positive_integer(), do: int + 1
     ordered_sample_list_gen =
       gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), min_length: 2) do
         Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
       end
 
     check all sample_list <- ordered_sample_list_gen,
-              threshold <- greater_than_two_gen do
+              threshold <- greater_than_one_gen do
       {:ok, result} = ExLTTB.lttb(sample_list, threshold)
       assert List.first(result) == List.first(sample_list)
       assert List.last(result) == List.last(sample_list)
@@ -47,7 +47,7 @@ defmodule ExLTTBTest do
   end
 
   property "all properties hold also with data in a different shape with access functions" do
-    greater_than_two_gen = gen all int <- positive_integer(), do: int + 2
+    greater_than_one_gen = gen all int <- positive_integer(), do: int + 1
     ordered_sample_list_gen =
       gen all sample_list <- list_of(fixed_list([{:timestamp, float()}, {:data, float()}]), min_length: 2) do
         Enum.sort(sample_list, fn a, b ->
@@ -62,7 +62,7 @@ defmodule ExLTTBTest do
     xy_to_sample_fun = fn x, y -> [timestamp: x, data: y] end
 
     check all sample_list <- ordered_sample_list_gen,
-              threshold <- greater_than_two_gen do
+              threshold <- greater_than_one_gen do
       {:ok, result} =
         ExLTTB.lttb(
           sample_list,
