@@ -42,6 +42,7 @@ defmodule ExLTTB.Mixfile do
 
   defp package do
     [
+      description: "An Elixir downsampling library that retains the visual characteristics of your data",
       maintainers: ["Riccardo Binetti", "Davide Bettio"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/ispirata/ex_lttb"}
