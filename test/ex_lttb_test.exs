@@ -46,6 +46,33 @@ defmodule ExLTTBTest do
     end
   end
 
+  property "resulting list has the same length if threshold >= original list length" do
+    ordered_sample_list_gen =
+      gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), min_length: 2) do
+        Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
+      end
+
+    check all sample_list <- ordered_sample_list_gen,
+              threshold_offset <- positive_integer() do
+      threshold = length(sample_list) + threshold_offset
+      {:ok, result} = ExLTTB.lttb(sample_list, threshold)
+      assert length(result) == length(sample_list)
+    end
+  end
+
+  property "returns {:error, :invalid_threshold} if threshold < 2" do
+    less_than_two_gen = gen all int <- positive_integer(), do: 2 - int
+    ordered_sample_list_gen =
+      gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), min_length: 2) do
+        Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
+      end
+
+    check all sample_list <- ordered_sample_list_gen,
+              threshold <- less_than_two_gen do
+      assert {:error, :invalid_threshold} == ExLTTB.lttb(sample_list, threshold)
+    end
+  end
+
   property "all properties hold also with data in a different shape with access functions" do
     greater_than_one_gen = gen all int <- positive_integer(), do: int + 1
     ordered_sample_list_gen =
