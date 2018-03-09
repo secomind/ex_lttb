@@ -9,6 +9,11 @@ defmodule ExLTTB.Mixfile do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
+      #Docs
+      name: "ExLTTB",
+      source_url: "https://github.com/ispirata/ex_lttb",
+      docs: [main: "ExLTTB"],
+      # excoveralls
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
