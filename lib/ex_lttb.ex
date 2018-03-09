@@ -33,7 +33,8 @@ defmodule ExLTTB do
   * `xy_to_sample_fun`: a function that takes as argument `x` and `y` and returns a sample with these coordinates. Defaults to `%{x: x, y: y}`
 
   ## Return
-  A downsampled list of samples.
+  * `{:ok, sample_list}` where sample_list is a downsampled list of samples.
+  * `{:error, reason}`
   """
   def lttb(sample_list, threshold, opts \\ [])
 
