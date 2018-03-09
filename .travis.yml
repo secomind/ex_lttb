@@ -1,0 +1,7 @@
+language: elixir
+matrix:
+  include:
+    - elixir: 1.5
+    - elixir: 1.6
+after_script:
+  - mix coveralls.travis
