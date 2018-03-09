@@ -21,11 +21,11 @@ defmodule ExLTTB.Stream do
 
   @doc """
   Downsamples a samples stream using a modified version of [LTTB](https://skemman.is/bitstream/1946/15343/3/SS_MSthesis.pdf).
-  The difference with the original algorithm is that since a Stream could be infinite, it doesn't make sense to define the number of output buckets (threshold).
-  Instead, the parameter here is the average bucket size (≈ downsample rate, see Return).
+
+  The difference with the original algorithm is that since a Stream could be infinite, it doesn't make sense to define the number of output buckets (threshold). Instead, the parameter here is the average bucket size (≈ downsample rate, see Return).
 
   ## Arguments
-  * `samples_stream`: a `Stream` of samples. These can have any representation provided that access functions are provided (see Options)
+  * `samples_stream`: a `Stream` of samples. These can have any representation provided that access functions are provided (see Options). The stream is assumed to be sorted by the `x` coordinate.
   * `avg_bucket_size`: the average size of a single bucket. The first (and if the Stream is not infinite, also the last) bucket has only one sample like in the original algorithm
   * `opts`: a keyword list of options.
 
@@ -35,7 +35,7 @@ defmodule ExLTTB.Stream do
   * `xy_to_sample_fun`: a function that takes as argument `x` and `y` and returns a sample with these coordinates. Defaults to `%{x: x, y: y}`
 
   ## Return
-  A downsampled `Stream`. If the starting `samples_stream` has a limited length L, than the length of the returned stream length is <= 2 + ceil(L / avg_bucket_size).
+  A downsampled `Stream`. If the starting `samples_stream` has a limited length L, than the length of the returned stream length is `N <= 2 + ceil(L / avg_bucket_size)`.
   """
   def lttb(samples_stream, avg_bucket_size, opts \\ [])
 

@@ -23,7 +23,7 @@ defmodule ExLTTB do
   Downsamples a sample list using [LTTB](https://skemman.is/bitstream/1946/15343/3/SS_MSthesis.pdf).
 
   ## Arguments
-  * `sample_list`: a `List` of samples. These can have any representation provided that access functions are provided (see Options)
+  * `sample_list`: a `List` of samples. These can have any representation provided that access functions are provided (see Options). The samples are assumed to be sorted by the `x` coordinate.
   * `threshold`: the number of required output samples
   * `opts`: a keyword list of options.
 
