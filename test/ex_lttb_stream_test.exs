@@ -10,7 +10,7 @@ defmodule ExLTTB.StreamTest do
       end
 
     check all sample_list <- ordered_sample_list_gen,
-              avg_bucket_size <- float(min: 1.0, max: length(sample_list)) do
+              avg_bucket_size <- float(min: 1.0) do
       result =
         ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
         |> Enum.to_list()
