@@ -8,6 +8,7 @@ defmodule ExLTTB.Mixfile do
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      package: package(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -31,6 +32,14 @@ defmodule ExLTTB.Mixfile do
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:excoveralls, "~> 0.8", only: :test},
       {:stream_data, "~> 0.1", only: :test}
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Riccardo Binetti", "Davide Bettio"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/ispirata/ex_lttb"}
     ]
   end
 end
