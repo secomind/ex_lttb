@@ -12,7 +12,7 @@ defmodule ExLTTBTest do
 
     check all sample_list <- ordered_sample_list_gen,
               threshold <- greater_than_one_gen do
-      {:ok, result} = ExLTTB.lttb(sample_list, threshold)
+      {:ok, result} = ExLTTB.downsample_to(sample_list, threshold)
       assert length(result) == threshold || length(sample_list) <= threshold
     end
   end
@@ -27,7 +27,7 @@ defmodule ExLTTBTest do
 
     check all sample_list <- ordered_sample_list_gen,
               threshold <- greater_than_one_gen do
-      {:ok, result} = ExLTTB.lttb(sample_list, threshold)
+      {:ok, result} = ExLTTB.downsample_to(sample_list, threshold)
       assert Enum.all?(result, fn el -> Enum.member?(sample_list, el) end)
     end
   end
@@ -41,7 +41,7 @@ defmodule ExLTTBTest do
 
     check all sample_list <- ordered_sample_list_gen,
               threshold <- greater_than_one_gen do
-      {:ok, result} = ExLTTB.lttb(sample_list, threshold)
+      {:ok, result} = ExLTTB.downsample_to(sample_list, threshold)
       assert List.first(result) == List.first(sample_list)
       assert List.last(result) == List.last(sample_list)
     end
@@ -56,7 +56,7 @@ defmodule ExLTTBTest do
     check all sample_list <- ordered_sample_list_gen,
               threshold_offset <- positive_integer() do
       threshold = length(sample_list) + threshold_offset
-      {:ok, result} = ExLTTB.lttb(sample_list, threshold)
+      {:ok, result} = ExLTTB.downsample_to(sample_list, threshold)
       assert length(result) == length(sample_list)
     end
   end
@@ -70,7 +70,7 @@ defmodule ExLTTBTest do
 
     check all sample_list <- ordered_sample_list_gen,
               threshold <- less_than_two_gen do
-      assert {:error, :invalid_threshold} == ExLTTB.lttb(sample_list, threshold)
+      assert {:error, :invalid_threshold} == ExLTTB.downsample_to(sample_list, threshold)
     end
   end
 
@@ -93,7 +93,7 @@ defmodule ExLTTBTest do
     check all sample_list <- ordered_sample_list_gen,
               threshold <- greater_than_one_gen do
       {:ok, result} =
-        ExLTTB.lttb(
+        ExLTTB.downsample_to(
           sample_list,
           threshold,
           sample_to_x_fun: sample_to_x_fun,
