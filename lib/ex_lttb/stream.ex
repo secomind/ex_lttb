@@ -37,13 +37,13 @@ defmodule ExLTTB.Stream do
   ## Return
   A downsampled `Stream`. If the starting `samples_stream` has a limited length L, than the length of the returned stream length is `N <= 2 + ceil(L / avg_bucket_size)`.
   """
-  def lttb(samples_stream, avg_bucket_size, opts \\ [])
+  def downsample(samples_stream, avg_bucket_size, opts \\ [])
 
-  def lttb(samples_stream, avg_bucket_size, _opts) when avg_bucket_size == 1.0 do
+  def downsample(samples_stream, avg_bucket_size, _opts) when avg_bucket_size == 1.0 do
     samples_stream
   end
 
-  def lttb(samples_stream, avg_bucket_size, opts) when avg_bucket_size > 1 do
+  def downsample(samples_stream, avg_bucket_size, opts) when avg_bucket_size > 1 do
     make_buckets(samples_stream, avg_bucket_size, opts)
     |> select_samples(opts)
   end

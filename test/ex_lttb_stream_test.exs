@@ -12,7 +12,7 @@ defmodule ExLTTB.StreamTest do
     check all sample_list <- ordered_sample_list_gen,
               avg_bucket_size <- float(min: 1.0) do
       result =
-        ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
+        ExLTTB.Stream.downsample(sample_list, avg_bucket_size)
         |> Enum.to_list()
 
       assert length(result) <=
@@ -29,7 +29,7 @@ defmodule ExLTTB.StreamTest do
     check all sample_list <- ordered_sample_list_gen,
               avg_bucket_size <- float(min: 1.0, max: length(sample_list)) do
       result =
-        ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
+        ExLTTB.Stream.downsample(sample_list, avg_bucket_size)
         |> Enum.to_list()
 
       assert Enum.all?(result, fn el -> Enum.member?(sample_list, el) end)
@@ -45,7 +45,7 @@ defmodule ExLTTB.StreamTest do
     check all sample_list <- ordered_sample_list_gen,
               avg_bucket_size <- float(min: 1.0, max: length(sample_list)) do
       result =
-        ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
+        ExLTTB.Stream.downsample(sample_list, avg_bucket_size)
         |> Enum.to_list()
 
       assert List.first(result) == List.first(sample_list)
@@ -61,7 +61,7 @@ defmodule ExLTTB.StreamTest do
 
     check all sample_list <- ordered_sample_list_gen do
       avg_bucket_size = 1
-      result = ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
+      result = ExLTTB.Stream.downsample(sample_list, avg_bucket_size)
       assert result == sample_list
     end
   end
@@ -76,7 +76,7 @@ defmodule ExLTTB.StreamTest do
     check all sample_list <- ordered_sample_list_gen,
               avg_bucket_size <- greater_than_one_gen do
       result =
-        ExLTTB.Stream.lttb(sample_list, avg_bucket_size)
+        ExLTTB.Stream.downsample(sample_list, avg_bucket_size)
         |> Enum.to_list()
 
       assert length(result) <=
@@ -102,7 +102,7 @@ defmodule ExLTTB.StreamTest do
     check all sample_list <- ordered_sample_list_gen,
               avg_bucket_size <- float(min: 1.0, max: length(sample_list)) do
       result =
-        ExLTTB.Stream.lttb(
+        ExLTTB.Stream.downsample(
           sample_list,
           avg_bucket_size,
           sample_to_x_fun: sample_to_x_fun,

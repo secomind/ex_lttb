@@ -25,7 +25,7 @@ end
 input_samples = for x <- 1..100, do: %{x: x, y: :random.uniform() * 100}
 
 # 30 output samples
-{:ok, output_samples} = ExLTTB.lttb(input_samples, 30)
+{:ok, output_samples} = ExLTTB.downsample_to(input_samples, 30)
 
 # Downsample a list of data of arbitrary shape
 input_samples =
@@ -41,7 +41,7 @@ sample_to_y_fun = fn sample -> sample[:data] end
 xy_to_sample_fun = fn x, y -> %{nested: %{timebase: x}, data: y} end
 
 {:ok, output_samples} =
-  ExLTTB.lttb(
+  ExLTTB.downsample_to(
     input_samples,
     30,
     sample_to_x_fun: sample_to_x_fun,
@@ -54,7 +54,7 @@ input_stream =
   Stream.iterate(%{x: 0, y: :random.uniform() * 100}, fn %{x: x} -> %{x: x + 1, y: :random.uniform() * 100} end)
 
 # Downsample rate of 2.3
-output_samples = ExLTTB.Stream.lttb(input_stream, 2.3) |> Enum.take(20)
+output_samples = ExLTTB.Stream.downsample(input_stream, 2.3) |> Enum.take(20)
 
 # The options for arbitrary shaped data are the same for the streaming version
 ```

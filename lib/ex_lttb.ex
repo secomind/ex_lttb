@@ -24,7 +24,7 @@ defmodule ExLTTB do
 
   ## Arguments
   * `sample_list`: a `List` of samples. These can have any representation provided that access functions are provided (see Options). The samples are assumed to be sorted by the `x` coordinate.
-  * `threshold`: the number of required output samples
+  * `threshold`: the number of required output samples. Must be >= 2.
   * `opts`: a keyword list of options.
 
   ## Options
@@ -36,22 +36,22 @@ defmodule ExLTTB do
   * `{:ok, sample_list}` where sample_list is a downsampled list of samples.
   * `{:error, reason}`
   """
-  def lttb(sample_list, threshold, opts \\ [])
+  def downsample_to(sample_list, threshold, opts \\ [])
 
-  def lttb(_sample_list, threshold, _opts) when threshold < 2 do
+  def downsample_to(_sample_list, threshold, _opts) when threshold < 2 do
     {:error, :invalid_threshold}
   end
 
-  def lttb([first_sample | _tail] = sample_list, threshold, _opts)
+  def downsample_to([first_sample | _tail] = sample_list, threshold, _opts)
       when threshold == 2 and length(sample_list) >= 2 do
     {:ok, [first_sample, List.last(sample_list)]}
   end
 
-  def lttb(sample_list, threshold, _opts) when threshold > length(sample_list) do
+  def downsample_to(sample_list, threshold, _opts) when threshold > length(sample_list) do
     {:ok, sample_list}
   end
 
-  def lttb(sample_list, threshold, opts) do
+  def downsample_to(sample_list, threshold, opts) do
     samples =
       make_buckets(sample_list, threshold)
       |> select_samples(opts)
