@@ -25,7 +25,7 @@ end
 input_samples = for x <- 1..100, do: %{x: x, y: :random.uniform() * 100}
 
 # 30 output samples
-{:ok, output_samples} = ExLTTB.downsample_to(input_samples, 30)
+output_samples = ExLTTB.downsample_to(input_samples, 30)
 
 # Downsample a list of data of arbitrary shape
 input_samples =
@@ -40,7 +40,7 @@ sample_to_x_fun = fn sample -> sample[:nested][:timebase] end
 sample_to_y_fun = fn sample -> sample[:data] end
 xy_to_sample_fun = fn x, y -> %{nested: %{timebase: x}, data: y} end
 
-{:ok, output_samples} =
+output_samples =
   ExLTTB.downsample_to(
     input_samples,
     30,
