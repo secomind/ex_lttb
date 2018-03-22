@@ -4,12 +4,12 @@ defmodule ExLTTB.Mixfile do
   def project do
     [
       app: :ex_lttb,
-      version: "0.2.0",
+      version: "0.3.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
-      #Docs
+      # Docs
       name: "ExLTTB",
       source_url: "https://github.com/ispirata/ex_lttb",
       docs: [main: "ExLTTB"],
@@ -43,7 +43,8 @@ defmodule ExLTTB.Mixfile do
 
   defp package do
     [
-      description: "An Elixir downsampling library that retains the visual characteristics of your data",
+      description:
+        "An Elixir downsampling library that retains the visual characteristics of your data",
       maintainers: ["Riccardo Binetti", "Davide Bettio"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/ispirata/ex_lttb"}
