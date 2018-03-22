@@ -24,7 +24,7 @@ defmodule ExLTTB do
 
   ## Arguments
   * `sample_list`: a `List` of samples. These can have any representation provided that access functions are provided (see Options). The samples are assumed to be sorted by the `x` coordinate.
-  * `threshold`: the number of required output samples. Must be >= 2.
+  * `threshold`: the number of required output samples. Must be >= 0.
   * `opts`: a keyword list of options.
 
   ## Options
@@ -33,30 +33,26 @@ defmodule ExLTTB do
   * `xy_to_sample_fun`: a function that takes as argument `x` and `y` and returns a sample with these coordinates. Defaults to `%{x: x, y: y}`
 
   ## Return
-  * `{:ok, sample_list}` where sample_list is a downsampled list of samples.
-  * `{:error, reason}`
+  * `sample_list`: a downsampled list of samples.
   """
   def downsample_to(sample_list, threshold, opts \\ [])
 
-  def downsample_to(_sample_list, threshold, _opts) when threshold < 2 do
-    {:error, :invalid_threshold}
+  def downsample_to(sample_list, threshold, _opts)
+      when (threshold >= 0 and threshold < 2) or length(sample_list) <= 2 do
+    Enum.take(sample_list, threshold)
   end
 
-  def downsample_to([first_sample | _tail] = sample_list, threshold, _opts)
-      when threshold == 2 and length(sample_list) >= 2 do
-    {:ok, [first_sample, List.last(sample_list)]}
+  def downsample_to([first_sample | _tail] = sample_list, threshold, _opts) when threshold == 2 do
+    [first_sample, List.last(sample_list)]
   end
 
   def downsample_to(sample_list, threshold, _opts) when threshold > length(sample_list) do
-    {:ok, sample_list}
+    sample_list
   end
 
   def downsample_to(sample_list, threshold, opts) do
-    samples =
-      make_buckets(sample_list, threshold)
-      |> select_samples(opts)
-
-    {:ok, samples}
+    make_buckets(sample_list, threshold)
+    |> select_samples(opts)
   end
 
   defp make_buckets(sample_list, buckets_number) when buckets_number > length(sample_list) do
