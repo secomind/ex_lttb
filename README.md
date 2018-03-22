@@ -13,7 +13,7 @@ Add `ex_lttb` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_lttb, "~> 0.2.0"}
+    {:ex_lttb, "~> 0.3.0"}
   ]
 end
 ```
