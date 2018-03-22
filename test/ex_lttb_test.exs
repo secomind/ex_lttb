@@ -12,7 +12,7 @@ defmodule ExLTTBTest do
 
     check all sample_list <- ordered_sample_list_gen,
               threshold <- greater_than_one_gen do
-      {:ok, result} = ExLTTB.downsample_to(sample_list, threshold)
+      result = ExLTTB.downsample_to(sample_list, threshold)
       assert length(result) == threshold || length(sample_list) <= threshold
     end
   end
@@ -27,7 +27,7 @@ defmodule ExLTTBTest do
 
     check all sample_list <- ordered_sample_list_gen,
               threshold <- greater_than_one_gen do
-      {:ok, result} = ExLTTB.downsample_to(sample_list, threshold)
+      result = ExLTTB.downsample_to(sample_list, threshold)
       assert Enum.all?(result, fn el -> Enum.member?(sample_list, el) end)
     end
   end
@@ -41,7 +41,7 @@ defmodule ExLTTBTest do
 
     check all sample_list <- ordered_sample_list_gen,
               threshold <- greater_than_one_gen do
-      {:ok, result} = ExLTTB.downsample_to(sample_list, threshold)
+      result = ExLTTB.downsample_to(sample_list, threshold)
       assert List.first(result) == List.first(sample_list)
       assert List.last(result) == List.last(sample_list)
     end
@@ -56,21 +56,44 @@ defmodule ExLTTBTest do
     check all sample_list <- ordered_sample_list_gen,
               threshold_offset <- positive_integer() do
       threshold = length(sample_list) + threshold_offset
-      {:ok, result} = ExLTTB.downsample_to(sample_list, threshold)
+      result = ExLTTB.downsample_to(sample_list, threshold)
       assert length(result) == length(sample_list)
     end
   end
 
-  property "returns {:error, :invalid_threshold} if threshold < 2" do
-    less_than_two_gen = gen all int <- positive_integer(), do: 2 - int
+  property "returns just the first sample if threshold == 1" do
     ordered_sample_list_gen =
-      gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), min_length: 2) do
+      gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), min_length: 1) do
+        Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
+      end
+
+    check all sample_list <- ordered_sample_list_gen do
+      assert Enum.take(sample_list, 1) == ExLTTB.downsample_to(sample_list, 1)
+    end
+  end
+
+  property "returns an empty list if threshold == 0" do
+    ordered_sample_list_gen =
+      gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), min_length: 0) do
+        Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
+      end
+
+    check all sample_list <- ordered_sample_list_gen do
+      assert [] == ExLTTB.downsample_to(sample_list, 0)
+    end
+  end
+
+  property "returns the same sample_list if 0 <= length(sample_list) <= 2" do
+    greater_than_two_gen = gen all int <- positive_integer(), do: int + 1
+
+    ordered_sample_list_gen =
+      gen all sample_list <- list_of(fixed_map(%{x: float(), y: float()}), max_length: 2) do
         Enum.sort(sample_list, fn %{x: xa}, %{x: xb} -> xa <= xb end)
       end
 
     check all sample_list <- ordered_sample_list_gen,
-              threshold <- less_than_two_gen do
-      assert {:error, :invalid_threshold} == ExLTTB.downsample_to(sample_list, threshold)
+              threshold <- greater_than_two_gen do
+      assert sample_list == ExLTTB.downsample_to(sample_list, threshold)
     end
   end
 
@@ -92,7 +115,7 @@ defmodule ExLTTBTest do
 
     check all sample_list <- ordered_sample_list_gen,
               threshold <- greater_than_one_gen do
-      {:ok, result} =
+      result =
         ExLTTB.downsample_to(
           sample_list,
           threshold,
