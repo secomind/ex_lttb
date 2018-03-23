@@ -18,6 +18,10 @@ def deps do
 end
 ```
 
+## Documentation
+
+You can read the documentation on [HexDocs](https://hexdocs.pm/ex_lttb).
+
 ## Examples
 
 ```elixir
